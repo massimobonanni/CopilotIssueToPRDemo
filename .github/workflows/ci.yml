@@ -1,0 +1,22 @@
+name: Build e test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet restore CopilotIssueDemo.sln
+      - run: dotnet build CopilotIssueDemo.sln --configuration Release --no-restore
+      - run: dotnet test CopilotIssueDemo.sln --configuration Release --no-build

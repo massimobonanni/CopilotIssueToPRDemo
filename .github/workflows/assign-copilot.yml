@@ -1,0 +1,53 @@
+name: Assegna nuove issue a Copilot
+
+on:
+  issues:
+    types: [opened]
+
+permissions: {}
+
+jobs:
+  assign:
+    if: contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Assegna la issue al cloud agent
+        uses: actions/github-script@v8
+        env:
+          COPILOT_ASSIGN_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN }}
+        with:
+          github-token: ${{ secrets.COPILOT_ASSIGN_TOKEN }}
+          script: |
+            if (!process.env.COPILOT_ASSIGN_TOKEN) {
+              throw new Error('Secret COPILOT_ASSIGN_TOKEN mancante: configurare un token utente fine-grained.');
+            }
+
+            const { owner, repo } = context.repo;
+            const bot = 'copilot-swe-agent[bot]';
+            const response = await github.request('POST /repos/{owner}/{repo}/issues/{issue_number}/assignees', {
+              owner,
+              repo,
+              issue_number: context.issue.number,
+              assignees: [bot],
+              agent_assignment: {
+                target_repo: context.payload.repository.full_name,
+                base_branch: context.payload.repository.default_branch,
+                custom_instructions: [
+                  'Implementa la funzionalita richiesta dalla issue rispettando .github/copilot-instructions.md.',
+                  'Aggiungi test automatici e aggiorna la documentazione pertinente.',
+                  'Esegui dotnet build e dotnet test.',
+                  'Apri una pull request collegata alla issue e riepiloga modifiche e verifiche.',
+                  'Non eseguire merge e non abilitare auto-merge.'
+                ].join(' ')
+              },
+              headers: {
+                accept: 'application/vnd.github+json',
+                'X-GitHub-Api-Version': '2022-11-28'
+              }
+            });
+
+            if (!response.data.assignees?.some(assignee => assignee.login === bot)) {
+              throw new Error('Copilot non risulta assegnato. Controllare permessi del token, accesso Copilot e abilitazione del cloud agent.');
+            }
+            core.info(`Copilot assegnato alla issue #${context.issue.number}.`);
