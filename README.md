@@ -1,4 +1,4 @@
-# CopilotIssueDemo - GH-600 demo
+# CopilotIssueToPRDemo - GH-600 demo
 
 A small C# console application demonstrating the flow **new issue -> automatic assignment
 to Copilot coding/cloud agent -> implementation with tests -> pull request -> human review**.
@@ -57,30 +57,41 @@ each on a separate line. The list displays:
 
 ## Set up the GitHub demo (manual steps)
 
-The repository is initialized **locally only**, on branch `main`, with no commits,
-remotes, or pushes. Publishing and configuring secrets are not performed
-automatically by this demo.
+Start from the [demo repository](https://github.com/massimobonanni/CopilotIssueToPRDemo)
+and create your own fork. Run the exercise in **your fork**, not in the original
+repository. Configure Actions, Copilot access, and secrets separately for your fork;
+the original repository's secrets are not copied.
 
-1. Create an empty GitHub repository without an initial README. From the local
-   directory, after reviewing the files, run the following commands, replacing
-   `OWNER/REPO` with your repository:
+1. Open the demo repository on GitHub, select **Fork -> Create a new fork**, and
+   choose your personal account or an organization where you can configure the
+   repository. Keep the name `CopilotIssueToPRDemo` and copy the `main` branch.
+   Clone **your fork** from PowerShell, replacing `YOUR-OWNER` with its owner:
 
    ```powershell
-   git add .
-   git commit -m "C# console demo for GH-600"
-   git remote add origin https://github.com/OWNER/REPO.git
-   git push -u origin main
+   git clone https://github.com/YOUR-OWNER/CopilotIssueToPRDemo.git
+   Set-Location .\CopilotIssueToPRDemo
+   git remote -v
    ```
 
-2. Verify that `main` is the **default branch** and Actions is allowed.
-   The `issues` workflow must already be committed and pushed to the default branch
-   **before** opening the issue. An existing or reopened issue does not trigger
-   `issues: opened`; to repeat the demo, open a new issue, or rerun a failed
-   workflow after fixing the configuration.
-3. Enable Copilot cloud agent for the user and repository. Organization policies
-   may require additional approvals.
+   `origin` should point to your fork. No `git init`, initial commit, or first push
+   is needed: the fork already contains the demo files and commit history.
+   Use the commands in **Run locally** to build, test, and try the initial app.
+
+2. In **your fork**, enable **Issues** under **Settings -> General -> Features**
+   if needed. Open the **Actions** tab and enable workflows if GitHub asks you to;
+   workflows may be disabled initially in a fork. Verify that repository or
+   organization settings allow the actions used by the demo and that `main` is
+   the **default branch**.
+   The `issues` workflow must be present on the fork's default branch **before**
+   opening the issue; it is included when you fork `main`. An existing or reopened
+   issue does not trigger `issues: opened`; to repeat the demo, open a new issue,
+   or rerun a failed workflow after fixing the configuration.
+3. Enable Copilot cloud agent for the user and **your fork**. Organization policies
+   may require additional approvals. Access granted to the original repository
+   does not automatically configure your fork.
 4. The user starting the agent configures a **fine-grained personal access token**
-   with a short expiration, restricted to **this repository only**. Repository permissions:
+   with a short expiration, restricted to **your fork only**, not the original
+   repository. Repository permissions:
 
    | Permission | Access |
    | --- | --- |
@@ -92,7 +103,7 @@ automatically by this demo.
 
    The token owner must have Copilot access and write access to the repository.
    Complete any required organization approvals for the token.
-   Save its value under **Settings -> Secrets and variables -> Actions ->
+   In **your fork**, save its value under **Settings -> Secrets and variables -> Actions ->
    New repository secret**, named **`COPILOT_ASSIGN_TOKEN`**.
    The default `GITHUB_TOKEN` is not sufficient to start the cloud agent: a user
    token is required, not an installation token. Never put the token in files,
@@ -101,7 +112,7 @@ automatically by this demo.
 ## End-to-end demonstration
 
 1. Show the initial console app and passing tests: task completion is the missing feature.
-2. On GitHub, open a new issue titled **Complete task** and
+2. On GitHub, in **your fork**, open a new issue titled **Complete task** and
    copy the body from `docs/issue-complete-task.md` (omit the first `# ...` line).
    The author must be an `OWNER`, `MEMBER`, or `COLLABORATOR`.
    **Every new issue from these authors triggers assignment**, not just the
