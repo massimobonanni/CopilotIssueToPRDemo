@@ -5,18 +5,18 @@ public class TodoApplicationTests
     [Fact]
     public void EmptyListShowsExplicitMessage()
     {
-        Assert.Contains("Nessuna attivita presente.", Run("2\n0\n"));
+        Assert.Contains("No tasks available.", Run("2\n0\n"));
     }
 
     [Fact]
     public void AddedItemsAreDisplayedInOrder()
     {
-        var output = Run("1\n  Preparare demo  \n1\nScrivere test\n2\n0\n");
+        var output = Run("1\n  Prepare demo  \n1\nWrite tests\n2\n0\n");
 
-        Assert.Contains("Attivita aggiunta: 1. Preparare demo", output);
-        Assert.Contains("Attivita aggiunta: 2. Scrivere test", output);
-        Assert.Contains($"1. Preparare demo{Environment.NewLine}2. Scrivere test", output);
-        Assert.Contains("Arrivederci!", output);
+        Assert.Contains("Task added: 1. Prepare demo", output);
+        Assert.Contains("Task added: 2. Write tests", output);
+        Assert.Contains($"1. Prepare demo{Environment.NewLine}2. Write tests", output);
+        Assert.Contains("Goodbye!", output);
     }
 
     [Fact]
@@ -24,9 +24,9 @@ public class TodoApplicationTests
     {
         var output = Run("1\n   \n2\n0\n");
 
-        Assert.Contains("Il titolo non puo essere vuoto.", output);
-        Assert.Contains("Nessuna attivita presente.", output);
-        Assert.DoesNotContain("Attivita aggiunta:", output);
+        Assert.Contains("Title cannot be empty.", output);
+        Assert.Contains("No tasks available.", output);
+        Assert.DoesNotContain("Task added:", output);
     }
 
     [Theory]
@@ -37,8 +37,8 @@ public class TodoApplicationTests
     {
         var output = Run($"{choice}\n2\n0\n");
 
-        Assert.Contains("Scelta non valida.", output);
-        Assert.Contains("Nessuna attivita presente.", output);
+        Assert.Contains("Invalid choice.", output);
+        Assert.Contains("No tasks available.", output);
     }
 
     [Theory]
@@ -48,15 +48,27 @@ public class TodoApplicationTests
     [InlineData(" 0 \n")]
     public void ExitOrEndOfInputTerminatesCleanly(string input)
     {
-        Assert.EndsWith($"Arrivederci!{Environment.NewLine}", Run(input));
+        Assert.EndsWith($"Goodbye!{Environment.NewLine}", Run(input));
     }
 
     [Fact]
     public void NewRunStartsWithEmptyMemory()
     {
-        Run("1\nTemporanea\n0\n");
+        Run("1\nTemporary\n0\n");
 
-        Assert.Contains("Nessuna attivita presente.", Run("2\n0\n"));
+        Assert.Contains("No tasks available.", Run("2\n0\n"));
+    }
+
+    [Fact]
+    public void MenuIsDisplayedInEnglish()
+    {
+        var output = Run("0\n");
+
+        Assert.Contains("Todo List - GH-600 Demo", output);
+        Assert.Contains("1. Add task", output);
+        Assert.Contains("2. List tasks", output);
+        Assert.Contains("0. Exit", output);
+        Assert.Contains("Choice: ", output);
     }
 
     private static string Run(string text)

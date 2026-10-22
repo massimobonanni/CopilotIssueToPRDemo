@@ -13,11 +13,11 @@ public class TodoListTests
     {
         var todos = new TodoList();
 
-        var first = todos.Add("  Preparare demo  ");
-        var second = todos.Add("Scrivere test");
+        var first = todos.Add("  Prepare demo  ");
+        var second = todos.Add("Write tests");
 
-        Assert.Equal(new TodoItem(1, "Preparare demo"), first);
-        Assert.Equal(new TodoItem(2, "Scrivere test"), second);
+        Assert.Equal(new TodoItem(1, "Prepare demo"), first);
+        Assert.Equal(new TodoItem(2, "Write tests"), second);
         Assert.Equal(new[] { first, second }, todos.Items);
     }
 
@@ -32,7 +32,7 @@ public class TodoListTests
         Assert.Throws<ArgumentException>(() => todos.Add(title));
 
         Assert.Empty(todos.Items);
-        Assert.Equal(1, todos.Add("Titolo valido").Id);
+        Assert.Equal(1, todos.Add("Valid title").Id);
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class TodoListTests
         var first = new TodoList();
         var second = new TodoList();
 
-        first.Add("Solo nella prima lista");
+        first.Add("Only in the first list");
 
         Assert.Empty(second.Items);
     }
@@ -59,7 +59,7 @@ public class TodoListTests
     public void ItemsCannotBeModifiedByCaller()
     {
         var todos = new TodoList();
-        todos.Add("Prima");
+        todos.Add("First");
 
         var collection = Assert.IsAssignableFrom<ICollection<TodoItem>>(todos.Items);
 

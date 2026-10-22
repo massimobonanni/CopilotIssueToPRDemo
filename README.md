@@ -6,7 +6,7 @@ to Copilot coding/cloud agent -> implementation with tests -> pull request -> hu
 The initial version lets you add and list tasks in memory, then exit.
 The **complete task feature is not implemented**: it is the exercise to assign
 to the agent, not an intentional bug. No database, network connection, or credentials
-are required to run the app. Console messages are in Italian; the exercise issue text is in English.
+are required to run the app. Console messages and the exercise issue text are in English.
 
 ## Prerequisites
 
