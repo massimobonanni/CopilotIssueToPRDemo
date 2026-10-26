@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Assegna la issue al cloud agent
+      - name: Assign the issue to cloud agent
         uses: actions/github-script@v8
         env:
           COPILOT_ASSIGN_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN }}
@@ -34,11 +34,11 @@ jobs:
                 target_repo: context.payload.repository.full_name,
                 base_branch: context.payload.repository.default_branch,
                 custom_instructions: [
-                  'Implementa la funzionalita richiesta dalla issue rispettando .github/copilot-instructions.md.',
-                  'Aggiungi test automatici e aggiorna la documentazione pertinente.',
-                  'Esegui dotnet build e dotnet test.',
-                  'Apri una pull request collegata alla issue e riepiloga modifiche e verifiche.',
-                  'Non eseguire merge e non abilitare auto-merge.'
+                  'Implements the features requested in the issue using .github/copilot-instructions.md.',
+                  'Add automatic tests and update the rekated documentation',
+                  'Execute dotnet build and dotnet test.',
+                  'Open a related pull request linked to the issue and summarize the changes.',
+                  'DON'T make any merge and DON'T anable auto-merge.'
                 ].join(' ')
               },
               headers: {
